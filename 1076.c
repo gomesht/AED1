@@ -1,34 +1,60 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-int main() {
-    int t;
-    scanf("%d", &t);
-    
-    while (t--) {
-        int n, v, a;
-        scanf("%d", &n);        // nodo de início/fim
-        scanf("%d %d", &v, &a); // vértices e arestas
-        
-        // Array para contar o grau de cada vértice
-        int grau[50] = {0};
-        
-        // Ler as arestas e contar graus
-        for (int i = 0; i < a; i++) {
-            int u, w;
-            scanf("%d %d", &u, &w);
-            grau[u]++;
-            grau[w]++;
+#define true 1
+#define false 0
+#define MAXSIZE 110
+
+int vis[MAXSIZE];
+char adj[MAXSIZE][MAXSIZE];
+
+int x, ans;
+void dfs(int);
+
+int main(int argc, char **argv)
+{
+
+    int n, y;
+    int q, u, v, i;
+
+    scanf("%d", &n);
+
+    while (n--)
+    {
+
+        scanf("%d", &q);
+        scanf("%d %d", &x, &y);
+
+        memset(vis, 0, sizeof(vis));
+        memset(adj, 0, sizeof(adj));
+        for (i = 0; i < y; ++i)
+        {
+
+            scanf("%d %d", &u, &v);
+            adj[u][v] = adj[v][u] = true;
+
         }
-        int impares = 0;
-        for (int i = 0; i < v; i++) {
-            if (grau[i] % 2 == 1) {
-                impares++;
-            }
-        }
-        int movimentos = a + (impares / 2);
-        
-        printf("%d\n", movimentos);
+
+        ans = 0;
+        dfs(q);
+        printf("%d\n", ans << 1);
+
     }
-    
+
     return 0;
+
+}
+
+void dfs(int u)
+{
+
+    int i;
+    vis[u] = true;
+
+    for (i = 0; i < x; ++i)
+        if (adj[u][i])
+            if (!vis[i])
+                dfs(i), ans++;
+
 }

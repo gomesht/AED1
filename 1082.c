@@ -2,76 +2,96 @@
 #include <stdlib.h>
 #include <string.h>
 
-int adj[30][30];
-int visited[30];
-int presente[30];
-int n_vertices;
+#define true 1
+#define false 0
+#define MAXSIZE 35
 
-void dfs(int v, int component[], int *size) {
-    visited[v] = 1;
-    component[*size] = v;
-    (*size)++;
-    
-    for (int i = 0; i < n_vertices; i++) {
-        if (adj[v][i] && !visited[i]) {
-            dfs(i, component, size);
-        }
-    }
+_Bool visitados[MAXSIZE];
+char adj[MAXSIZE][MAXSIZE];
+char vertices[MAXSIZE];
+
+int tam;
+int m, n;
+
+void dfs(int);
+int compara(char *, char *);
+
+void main ()
+{
+
+	char a, b;
+	int i, j, casos;
+	int caso = 0;
+
+	scanf("%d", &casos);
+
+	while (casos--)
+	{
+
+		scanf("%d %d", &m, &n);
+
+		
+		for (i = 0; i < n; ++i)
+		{
+
+			scanf(" %c %c", &a, &b);
+			adj[a - 'a'][b - 'a'] = 1;
+			adj[b - 'a'][a - 'a'] = 1;
+
+		}
+		
+		printf("Case #%d:\n", ++caso);
+		int ans = 0;
+		for (i = 0; i < m; ++i)
+		{
+
+			if (!visitados[i])
+			{
+
+				++ans, dfs(i);
+				qsort(vertices, tam, sizeof(char), compara);
+				for (j = 0; j < tam; ++j)
+					printf("%c,", vertices[j] + 'a');
+
+				printf("\n");
+
+			}
+
+			tam = 0;
+
+		}
+
+		printf("%d connected components\n", ans);
+		printf("\n");
+		memset(visitados, false, sizeof(visitados));
+		memset(adj, 0, sizeof(adj));
+
+	}
+
 }
 
-int compare(const void *a, const void *b) {
-    return (*(int*)a - *(int*)b);
+
+void dfs(int u)
+{
+
+	int i;
+	visitados[u] = true;
+	vertices[tam++] = u;
+	for (i = 0; i < m; ++i)
+		if (adj[u][i])
+			if (!visitados[i])
+				dfs(i);
+
 }
 
-int main() {
-    int v, e;
-    int caso = 1;
-    
-    while (scanf("%d %d", &v, &e)) {
-        if (v == 0 && e == 0) break;
-        
-        printf("Case #%d:\n", caso++);
-        
-        // Inicializar
-        memset(adj, 0, sizeof(adj));
-        memset(visited, 0, sizeof(visited));
-        n_vertices = v;
-        
-        // Ler as arestas
-        for (int i = 0; i < e; i++) {
-            char u, w;
-            scanf(" %c %c", &u, &w);
-            int iu = u - 'a';
-            int iw = w - 'a';
-            adj[iu][iw] = 1;
-            adj[iw][iu] = 1;  // grafo não direcionado
-        }
-        
-        int num_components = 0;
-        
-        // Encontrar componentes conexos
-        for (int i = 0; i < v; i++) {
-            if (!visited[i]) {
-                int component[30];
-                int size = 0;
-                
-                dfs(i, component, &size);
-                
-                // Ordenar os vértices do componente
-                qsort(component, size, sizeof(int), compare);
-                
-                // Imprimir o componente
-                for (int j = 0; j < size; j++) {
-                    printf("%c,", 'a' + component[j]);
-                }
-                printf("\n");
-                
-                num_components++;
-            }
-        }
-        
-        printf("%d connected components\n\n");
-    }
-    
-    return 0;
+int compara(char *a, char *b)
+{
+
+	if (*a == *b)
+		return 0;
+	else if (*a > *b)
+		return 1;
+	else
+		return -1;
+		
 }
